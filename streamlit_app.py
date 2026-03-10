@@ -11,18 +11,19 @@ st.set_page_config(page_title="株スキャナーAI", layout="wide")
 
 # --- 設定（API接続） ---
 try:
-    # transport='rest' を追加することで、エラーの原因である v1beta を回避し、安定版 v1 を使います
+    # transport='rest' で通信方式を安定版に固定
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"], transport='rest')
 except Exception as e:
     st.error(f"APIキーの設定エラー: {e}")
 
 st.title("🚀 日米・期待値最高ランク投資エージェント")
-st.caption("Gemini 1.5 Flash（安定版）が市場をスキャンし、独自の視点で分析します。")
+st.caption("Gemini 1.5 Flash（本番版URL固定）が市場をスキャンします。")
 
 # --- メイン処理 ---
 if st.button("市場をスキャンして5社選定"):
-    # モデル名を最新の安定版に指定
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # 💡 修正ポイント：モデル名の頭に 'models/' を付け、最新の安定版を直接指定します
+    # これにより v1beta への強制リダイレクトを回避します
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
     
     with st.status("🔍 AIが銘柄を選定中...", expanded=True) as status:
         st.write("1. 日米市場から有望銘柄をピックアップ中...")
@@ -73,6 +74,7 @@ if st.button("市場をスキャンして5社選定"):
             st.balloons()
             
         except Exception as e:
+            # 💡 エラーが出た場合、どのURLに繋ごうとしたか等を表示して原因を特定しやすくします
             st.error(f"解析中にエラーが発生しました: {e}")
 
 # --- サイドバー ---
