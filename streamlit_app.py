@@ -17,7 +17,7 @@ st.title("🚀 日米・期待値最高ランク投資エージェント")
 
 # --- メイン処理 ---
 if st.button("市場をスキャンして5社選定"):
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     
     with st.status("🔍 AIが銘柄を選定中...", expanded=True) as status:
         st.write("1. 日米市場から銘柄を抽出中...")
