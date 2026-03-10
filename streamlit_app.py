@@ -11,13 +11,13 @@ st.set_page_config(page_title="株スキャナーAI", layout="wide")
 
 # --- 設定（API接続） ---
 try:
-    # 接続エラーを回避するため、最新の安定版ルート(v1)を指定
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    # transport='rest' を追加することで、エラーの原因である v1beta を回避し、安定版 v1 を使います
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"], transport='rest')
 except Exception as e:
     st.error(f"APIキーの設定エラー: {e}")
 
 st.title("🚀 日米・期待値最高ランク投資エージェント")
-st.caption("Gemini 1.5 Flashが市場をスキャンし、独自の視点で分析します。")
+st.caption("Gemini 1.5 Flash（安定版）が市場をスキャンし、独自の視点で分析します。")
 
 # --- メイン処理 ---
 if st.button("市場をスキャンして5社選定"):
@@ -51,7 +51,7 @@ if st.button("市場をスキャンして5社選定"):
                     price_val = stock.fast_info['last_price']
                     curr_price = round(price_val, 2) if price_val else "取得不可"
                     
-                    analysis_prompt = f"銘柄:{ticker} 現在価格:{curr_price}。この株の期待値(SS~A)、買い目安、理由を2行で書いてください。"
+                    analysis_prompt = f"銘柄:{ticker} 現在価格:{curr_price}。この株の期待値(SS~A)、買い目安、理由を短く2行で書いてください。"
                     analysis_res = model.generate_content(analysis_prompt)
                     
                     results.append({
